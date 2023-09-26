@@ -36,7 +36,10 @@ export const galleryMachine = createMachine({
               data: (context, event) => {
                 return [...context.data, ...event.data.nodes];
               },
-              page: (context) => context.page + 1,
+              page: (context) =>
+                context?.data?.nodes?.length == 0
+                  ? context.page
+                  : context.page + 1,
             }),
             "stopLoading",
           ],
@@ -63,6 +66,12 @@ export const galleryMachine = createMachine({
     failure: {
       on: {
         RETRY: "loading",
+        INPUT: {
+          actions: "updateInputValue",
+        },
+        FILTER: {
+          actions: "updateFilterData",
+        },
       },
     },
   },

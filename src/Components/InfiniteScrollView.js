@@ -12,7 +12,12 @@ const InfiniteScrollView = () => {
 
   const { loading, data, searchTerm, filteredData } = state.context;
 
-  const handleScroll = () => {
+  //Mounting
+  useEffect(() => {
+    send("FETCH");
+  }, []);
+
+  const handleScroll = (e) => {
     if (
       window.innerHeight + document.documentElement.scrollTop ===
       document.documentElement.offsetHeight
@@ -22,11 +27,6 @@ const InfiniteScrollView = () => {
       }
     }
   };
-
-  //Mounting
-  useEffect(() => {
-    send("FETCH");
-  }, []);
 
   // Infinfite Scroll
   useEffect(() => {

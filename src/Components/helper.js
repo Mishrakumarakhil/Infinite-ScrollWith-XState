@@ -32,7 +32,7 @@ export const actions = {
   }),
 
   updateFilterData: assign({
-    filteredData: (_, event) => {
+    filteredData: (context, event) => {
       return event.filteredData;
     },
   }),
@@ -42,14 +42,22 @@ export const actions = {
 
 export const services = {
   fetchArticles: async (context) => {
-    const { page } = context;
+    const { page, searchTerm } = context;
+
     try {
-      const response = await axios.get(`${API_URL}/${page}`);
-      const newArticles = response.data;
-      if (newArticles?.nodes?.length === 0) {
-        return Promise.reject("No more data available.");
+      if (searchTerm.trim().length > 0) {
+        // Reject the Promise with an error message
+        return Promise.reject(
+          "Fetching data not allowed if search text available."
+        );
+      } else {
+        const response = await axios.get(`${API_URL}/${page}`);
+        const newArticles = response.data;
+        if (newArticles?.nodes?.length === 0) {
+          return Promise.reject("No more data available.");
+        }
+        return newArticles;
       }
-      return newArticles;
     } catch (error) {
       return Promise.reject(error);
     }
