@@ -24,6 +24,8 @@ const InfiniteScrollView = () => {
     ) {
       if (!loading && state.matches("idle")) {
         send("FETCH");
+        send("RETRY");
+        
       }
     }
   };
