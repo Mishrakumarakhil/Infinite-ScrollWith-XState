@@ -8,7 +8,7 @@ export const galleryMachine = createMachine({
     page: 1,
     loading: false,
     searchTerm: "",
-    filteredData:[],
+    filteredData: [],
   },
 
   states: {
@@ -34,7 +34,6 @@ export const galleryMachine = createMachine({
           actions: [
             assign({
               data: (context, event) => {
-                console.log("123456", context, event);
                 return [...context.data, ...event.data.nodes];
               },
               page: (context) => context.page + 1,

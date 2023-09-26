@@ -11,7 +11,6 @@ const actions = {
   filterDataByTitle: assign({
     data: (context) => {
       const { data } = context;
-      console.log("hellllo", data);
       const searchTerm = context.searchTerm;
 
       if (!searchTerm) {
@@ -31,15 +30,12 @@ const actions = {
   }),
   updateInputValue: assign({
     searchTerm: (_, event) => {
-      console.log("input Value change", event);
-
       return event.value;
     },
   }),
 
   updateFilterData: assign({
-    filteredData: (context, event) => {
-      console.log("input filter change", context, event);
+    filteredData: (_, event) => {
       return event.filteredData;
     },
   }),
@@ -82,12 +78,7 @@ const InfiniteScrollView = () => {
 
   //Mounting
   useEffect(() => {
-    console.log("INPUTFETCH", send({ type: "FETCH" }));
     send("FETCH");
-
-    return () => {
-      console.log("Component unmounted");
-    };
   }, []);
 
   // Infinfite Scroll
@@ -102,17 +93,13 @@ const InfiniteScrollView = () => {
     const filteredData = data.filter((item) =>
       item.node.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log("INPUTFILTER", send({ type: "FILTER", filteredData }), data);
 
     send({ type: "FILTER", filteredData });
   }, [searchTerm]);
 
   const handleInputChange = (e) => {
-    // Send an event to update the input value in the state machine
-    console.log("INPUT", send({ type: "INPUT", value: e.target.value }));
     send({ type: "INPUT", value: e.target.value });
   };
-  console.log("helllo", loading, data, searchTerm);
 
   return (
     <>
