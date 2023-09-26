@@ -8,9 +8,21 @@ import { assign } from "xstate";
 const API_URL = "app-api/v1/photo-gallery-feed-page/page";
 
 const actions = {
-  filterDataByTitle: (context) => {
-    const { data } = context;
-  },
+  filterDataByTitle: assign({
+    data: (context) => {
+      const { data } = context;
+      console.log("hellllo", data);
+      const searchTerm = context.searchTerm;
+
+      if (!searchTerm) {
+        return data;
+      }
+      // Filter data based on the title containing the search term.
+      return data.filter((item) =>
+        item.node.title.toLowerCase().includes(searchTerm.toLowerCase())
+      );
+    },
+  }),
   startLoading: assign({
     loading: true,
   }),
@@ -41,7 +53,7 @@ const InfiniteScrollView = () => {
     services,
   });
 
-  const { loading, data } = state.context;
+  const { loading, data, searchTerm } = state.context;
 
   const handleScroll = () => {
     if (
@@ -67,10 +79,27 @@ const InfiniteScrollView = () => {
     };
   }, [send]);
 
-  console.log("helllo", loading, data);
+  useEffect(() => {
+    const filteredData = data.filter((item) =>
+      item.node.title.toLowerCase().includes(searchTerm.toLowerCase())
+    );
+    console.log("he09809890");
+    send({ type: "FILTER", filteredData });
+  }, [searchTerm]);
+  console.log("helllo", loading, data, searchTerm);
 
   return (
     <>
+      <input
+        type="text"
+        placeholder="Search by title"
+        value={searchTerm}
+        onChange={(e) => {
+          console.log("hello", e.target.value);
+          const searchTerms = e.target.value;
+          send({ type: "TYPE", searchTerms });
+        }}
+      />
       <Card data={data} loading={loading} />
     </>
   );

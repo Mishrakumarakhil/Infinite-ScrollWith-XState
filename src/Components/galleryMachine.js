@@ -8,12 +8,24 @@ export const galleryMachine = createMachine({
     data: [],
     page: 1,
     loading: false,
+    searchTerm:"",
   },
   //
   states: {
     idle: {
       on: {
         FETCH: "loading",
+         TYPE: {
+          // Update the searchTerm in the context when SET_SEARCH_TERM is received.
+          actions: assign({
+            searchTerm: (context, event) => event.searchTerms,
+          }),
+        },
+        FILTER: {
+            actions: assign({
+              data: (context, event) => event.filteredData,
+            }),
+          },
       },
     },
 
@@ -26,7 +38,10 @@ export const galleryMachine = createMachine({
             target: "success",
             actions: [
               assign({
-                data: (context, event) => [...context.data, ...event.data.nodes],
+                data: (context, event) =>{
+                    
+                    console.log("123456",context, event)
+                    return [...context.data, ...event.data.nodes]},
                 page: (context) => context.page + 1,
               }),
               "stopLoading",
@@ -51,4 +66,5 @@ export const galleryMachine = createMachine({
       },
     },
   },
+  predictableActionArguments: true,
 });
