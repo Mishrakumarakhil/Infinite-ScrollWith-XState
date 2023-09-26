@@ -36,10 +36,29 @@ const InfiniteScrollView = () => {
 
   const { loading, data } = state.context;
 
+  const handleScroll = () => {
+    if (
+      window.innerHeight + document.documentElement.scrollTop ===
+      document.documentElement.offsetHeight
+    ) {
+      if (!loading && state.matches("idle")) {
+        send("FETCH");
+      }
+    }
+  };
+
   //Mounting
   useEffect(() => {
     send("FETCH");
   }, []);
+
+  // Infinfite Scroll
+  useEffect(() => {
+    window.addEventListener("scroll", handleScroll);
+    return () => {
+      window.removeEventListener("scroll", handleScroll);
+    };
+  }, [send]);
 
   console.log("helllo", loading, data);
 
