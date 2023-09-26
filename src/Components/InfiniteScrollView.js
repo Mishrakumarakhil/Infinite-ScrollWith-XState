@@ -3,6 +3,7 @@ import axios from "axios";
 import { useMachine } from "@xstate/react";
 import Card from "./Card";
 import { galleryMachine } from "./galleryMachine";
+import { assign } from "xstate";
 
 const API_URL = "app-api/v1/photo-gallery-feed-page/page";
 
@@ -10,6 +11,12 @@ const actions = {
   filterDataByTitle: (context) => {
     const { data } = context;
   },
+  startLoading: assign({
+    loading: true,
+  }),
+  stopLoading: assign({
+    loading: false,
+  }),
 };
 
 const services = {

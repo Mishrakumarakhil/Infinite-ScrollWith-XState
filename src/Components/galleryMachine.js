@@ -3,11 +3,13 @@ import { createMachine, assign } from "xstate";
 export const galleryMachine = createMachine({
   id: "gallery",
   initial: "idle",
+  //states object 
   context: {
     data: [],
     page: 1,
     loading: false,
   },
+  //
   states: {
     idle: {
       on: {
@@ -15,26 +17,27 @@ export const galleryMachine = createMachine({
       },
     },
 
+
     loading: {
-      entry: "startLoading",
-      invoke: {
-        src: "fetchArticles",
-        onDone: {
-          target: "success",
-          actions: [
-            "stopLoading",
-            assign({
-              data: (context, event) => [...context.data, ...event.data.nodes],
-              page: (context) => context.page + 1,
-            }),
-          ],
-        },
-        onError: {
-          target: "failure",
-          actions: "stopLoading",
+        entry: "startLoading",
+        invoke: {
+          src: "fetchArticles",
+          onDone: {
+            target: "success",
+            actions: [
+              assign({
+                data: (context, event) => [...context.data, ...event.data.nodes],
+                page: (context) => context.page + 1,
+              }),
+              "stopLoading",
+            ],
+          },
+          onError: {
+            target: "failure",
+            actions: ["stopLoading"],
+          },
         },
       },
-    },
 
     success: {
       entry: "filterDataByTitle",
