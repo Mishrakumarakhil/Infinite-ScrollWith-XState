@@ -29,6 +29,20 @@ const actions = {
   stopLoading: assign({
     loading: false,
   }),
+  updateInputValue: assign({
+    searchTerm: (_, event) => {
+      console.log("input Value change", event);
+
+      return event.value
+    }
+  }),
+
+  updateFilterData: assign({
+    data: (context, event) => {
+      console.log("input filter change", context, event);
+      return event.filteredData;
+    },
+  }),
 };
 
 const services = {
@@ -68,7 +82,12 @@ const InfiniteScrollView = () => {
 
   //Mounting
   useEffect(() => {
+    console.log("INPUT",send({ type: "FETCH"}))
     send("FETCH");
+
+    return () => {
+      console.log("Component unmounted");
+    };
   }, []);
 
   // Infinfite Scroll
@@ -83,9 +102,16 @@ const InfiniteScrollView = () => {
     const filteredData = data.filter((item) =>
       item.node.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log("he09809890");
+    console.log("he09809890", filteredData);
+
     send({ type: "FILTER", filteredData });
   }, [searchTerm]);
+
+  const handleInputChange = (e) => {
+    // Send an event to update the input value in the state machine
+    console.log("INPUT",send({ type: "INPUT", value: e.target.value }))
+    send({ type: "INPUT", value: e.target.value });
+  };
   console.log("helllo", loading, data, searchTerm);
 
   return (
@@ -94,11 +120,12 @@ const InfiniteScrollView = () => {
         type="text"
         placeholder="Search by title"
         value={searchTerm}
-        onChange={(e) => {
-          console.log("hello", e.target.value);
-          const searchTerms = e.target.value;
-          send({ type: "TYPE", searchTerms });
-        }}
+        onChange={handleInputChange}
+        //   (e) => {
+        //   console.log("Input changed"); // Add this line
+        //   const searchTerms = e.target.value;
+        //   send({ type: "SEARCH", searchTerms });
+        // }}
       />
       <Card data={data} loading={loading} />
     </>
