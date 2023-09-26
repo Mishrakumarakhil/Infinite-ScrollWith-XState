@@ -3,14 +3,14 @@ import { createMachine, assign } from "xstate";
 export const galleryMachine = createMachine({
   id: "gallery",
   initial: "idle",
-  //states object
   context: {
     data: [],
     page: 1,
     loading: false,
     searchTerm: "",
+    filteredData:[],
   },
-  //
+
   states: {
     idle: {
       on: {
@@ -56,7 +56,6 @@ export const galleryMachine = createMachine({
         INPUT: {
           actions: "updateInputValue",
         },
-
         FILTER: {
           actions: "updateFilterData",
         },

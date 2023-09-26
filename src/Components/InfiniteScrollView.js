@@ -33,12 +33,12 @@ const actions = {
     searchTerm: (_, event) => {
       console.log("input Value change", event);
 
-      return event.value
-    }
+      return event.value;
+    },
   }),
 
   updateFilterData: assign({
-    data: (context, event) => {
+    filteredData: (context, event) => {
       console.log("input filter change", context, event);
       return event.filteredData;
     },
@@ -67,7 +67,7 @@ const InfiniteScrollView = () => {
     services,
   });
 
-  const { loading, data, searchTerm } = state.context;
+  const { loading, data, searchTerm, filteredData } = state.context;
 
   const handleScroll = () => {
     if (
@@ -82,7 +82,7 @@ const InfiniteScrollView = () => {
 
   //Mounting
   useEffect(() => {
-    console.log("INPUT",send({ type: "FETCH"}))
+    console.log("INPUTFETCH", send({ type: "FETCH" }));
     send("FETCH");
 
     return () => {
@@ -102,14 +102,14 @@ const InfiniteScrollView = () => {
     const filteredData = data.filter((item) =>
       item.node.title.toLowerCase().includes(searchTerm.toLowerCase())
     );
-    console.log("he09809890", filteredData);
+    console.log("INPUTFILTER", send({ type: "FILTER", filteredData }), data);
 
     send({ type: "FILTER", filteredData });
   }, [searchTerm]);
 
   const handleInputChange = (e) => {
     // Send an event to update the input value in the state machine
-    console.log("INPUT",send({ type: "INPUT", value: e.target.value }))
+    console.log("INPUT", send({ type: "INPUT", value: e.target.value }));
     send({ type: "INPUT", value: e.target.value });
   };
   console.log("helllo", loading, data, searchTerm);
@@ -121,13 +121,11 @@ const InfiniteScrollView = () => {
         placeholder="Search by title"
         value={searchTerm}
         onChange={handleInputChange}
-        //   (e) => {
-        //   console.log("Input changed"); // Add this line
-        //   const searchTerms = e.target.value;
-        //   send({ type: "SEARCH", searchTerms });
-        // }}
       />
-      <Card data={data} loading={loading} />
+      <Card
+        data={searchTerm.trim().length > 0 ? filteredData : data}
+        loading={loading}
+      />
     </>
   );
 };
